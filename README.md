@@ -75,6 +75,18 @@ Board support development
     * windows - FATxx           (file allocator table)
     * apple   - HFS, HFS+, APFS (Hierarchical File System) 
 
+Day-3:
+* kernel - it is a core component of operating system which manages resources, Nature of a kernel is reactive it wait until work request come
+  * types of kernel
+    * monolithic kernel
+    * micro kernel
 
-
+* module programming : 
+ * it is very difficult to provide every functionality to kernel at the time of boot so it provide adding functionality dynamically
+ * every thing in linux is a module 
+ * there are two types of module
+   * static module  (can't be remove )
+   * dynamic module (can be added and remove at any time)
+ * process of creating and inserting module
+   * 
   
