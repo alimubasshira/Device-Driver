@@ -81,12 +81,12 @@ Day-3:
     * monolithic kernel
     * micro kernel
 
-* module programming : 
- * it is very difficult to provide every functionality to kernel at the time of boot so it provide adding functionality dynamically
- * every thing in linux is a module 
- * there are two types of module
-   * static module  (can't be remove )
-   * dynamic module (can be added and remove at any time)
- * process of creating and inserting module
-   * 
+* module programming : (code)
+  * it is very difficult to provide every functionality to kernel at the time of boot so it provide adding functionality dynamically
+  * every thing in linux is a module 
+  * there are two types of module
+    * static module  (can't be remove )
+    * dynamic module (can be added and remove at any time)
+  * process of creating and inserting module
+    * 
   
