@@ -50,6 +50,7 @@ what is ABI?
  * It gives info about how to store function with its args and parameter in file so, seraching for that function is easy 
  * It tells how to locate what it needs inside the library file.
  * ABI is platfrom dependent but not language independent
+ * https://stackoverflow.com/questions/2171177/what-isabi-an-application-binary-interface-
 
  * you Actually don't need an ABI at all if-
    * Your program doesn't have functions
