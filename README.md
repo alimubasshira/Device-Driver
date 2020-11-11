@@ -48,7 +48,8 @@ what is ABI?
 
  * An ABI is a set of rules that determines calling convention, and rules for laying out structures,
  * It gives info about how to store function with its args and parameter in file so, seraching for that function is easy 
- * ABI is platfrom dependent but language independent
+ * It tells how to locate what it needs inside the library file.
+ * ABI is platfrom dependent but not language independent
 
  * you Actually don't need an ABI at all if-
    * Your program doesn't have functions
