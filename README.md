@@ -33,35 +33,35 @@ Toolchain for kernel/Device driver built process
       
       
 Day-2 :
-what is toolchain-
- It is a combination of tool as-
-  -> Binary utility
-     -as (assembler)
-     -ld (linker)
-     -objcopy/objdump (deassembler)
-  -> gcc (compiler)
-  -> header
-  -> libraries for c development
-  -> debugger
+what is toolchain?
+* It is a combination of tool as-
+  * Binary utility
+     * as (assembler)
+     * ld (linker)
+     * objcopy/objdump (deassembler)
+  * gcc (compiler)
+  * header
+  * libraries for c development
+  * debugger
 
 what is ABI?
- An ABI is a set of rules that determines calling convention, and rules for laying out structures,
- it gives info about how to store function with its args and parameter in file so, seraching for that function is easy 
 
+ * An ABI is a set of rules that determines calling convention, and rules for laying out structures,
+ * It gives info about how to store function with its args and parameter in file so, seraching for that function is easy 
  * ABI is platfrom dependent but language independent
 
  * you Actually don't need an ABI at all if-
-   -> Your program doesn't have functions
-   ->Your program is a single executable that is running alone (i.e. an embedded system) 
+   * Your program doesn't have functions
+   * Your program is a single executable that is running alone (i.e. an embedded system) 
      where it's literally the only thing running and it doesn't need to talk to anything else.
 
 Board support development
  * Bootloader
-   It is peice of code which prepare hardware for kernel ready
-   it is done in minimum 2 stages
-    1 stage : small code that boot the main bootloader 
+   * It is peice of code which prepare hardware for kernel ready
+   * It is done in minimum 2 stages
+     * 1 stage : small code that boot the main bootloader 
               ex- BIOS
-    2 stage : it perform hardware initialization(ethernet,timers, clocks, etc),provide info about location of filesystem of kernel to be loaded, pass necessary arguments to                   kernel and transfer control to kernel. '
+     * 2 stage : it perform hardware initialization(ethernet,timers, clocks, etc),provide info about location of filesystem of kernel to be loaded, pass necessary arguments to                   kernel and transfer control to kernel. '
               ex- GRUB, UBOOT,
  * kernel
  
