@@ -88,5 +88,18 @@ Day-3:
     * static module  (can't be remove )
     * dynamic module (can be added and remove at any time)
   * process of creating and inserting module
-    * 
+    * module initialization
+      @ hello.c --> 
+    * module removing
+      @ hello.c -->
+    * compilation and loading
+      @ makefile 
+    * utilites to veiw/manage/remove module
+      * insmod
+      * lsmod
+      * rmmod
+      * dmesg -c
+      * user -r
+      
+      
   
