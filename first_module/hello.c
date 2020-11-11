@@ -1,7 +1,7 @@
 #include<linux/init.h>
 #include<linux/module.h>
 
-module_licence("GPL");
+//module_licence("GPL");
 
 static int init_hello (void)
 {
@@ -10,10 +10,9 @@ static int init_hello (void)
 
 }
 
-static int exit_hello()
+static void exit_hello(void)
 {
  printk("good bye world\n");
-
 
 }
 
