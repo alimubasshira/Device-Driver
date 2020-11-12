@@ -89,9 +89,9 @@ Day-3:
     * dynamic module (can be added and remove at any time)
   * process of creating and inserting module
     * module initialization
-      @ hello.c --> 
+      @ hello.c --> module_init()
     * module removing
-      @ hello.c -->
+      @ hello.c --> module_exit()
     * compilation and loading
       @ makefile 
     * utilites to veiw/manage/remove module
