@@ -11,7 +11,7 @@ default :
 	$(MAKE) -C $(KERNELDIR) M=$(PWD)
 
 clean  :
-	$(MAKE) -C $(KERNELDIR) M=$(PWD)
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
 
 #	$(make) rm -rf  hello.mod.c hello.o hello.mod modules.order module.symvers hello.ko built-in.a hello.mod.o 
 
