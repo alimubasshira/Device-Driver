@@ -1,7 +1,7 @@
 obj-m := add.o average.o
 
 #native compiler
-KERNELDIR = /lib/modules/5.4.0-48-generic/build/
+KERNELDIR = /lib/modules/$(shell uname -r)/build/
 #KERNELDIR = /usr/src/linux-headers-5.4.0-48-generic/
 
 PWD := $(shell pwd)
