@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/Device_deriver/export_symbol/add.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/ubuntu/Device_deriver/export_symbol/add.ko /home/ubuntu/Device_deriver/export_symbol/add.o /home/ubuntu/Device_deriver/export_symbol/add.mod.o;  true
