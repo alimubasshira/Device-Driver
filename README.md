@@ -106,12 +106,15 @@ Day-4 : (code)
   * command line argument to module
     * module parameter       --> module_param(name , type, permission)
     * module array parameter --> module_array_param(name of varable, & no of element passed, type, permision )
-  * kernel symbol table
+  * As there is no shared object(libc ,.so)kind of think in kernel we have symbol table
+  * kernel symbol table - is resolve each symbols in our program by using symbol table
     * inserting multiple module --> modprobe is used
     * modprobe  --> module.dep file 
     * depmod -a --> update module.dep (extra ---> .ko)
     * EXPORT_SYMBOL_GPL(fun_name / var_name)
     
-    
+Day-5 :
+Device Driver
+  *
       
   
