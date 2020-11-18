@@ -66,7 +66,7 @@ static int __init init_fun (void)
 	my_cdev -> ops = &fops;
 
 	//notify kernel about the new device
-	status = cdev_add(my_cdev, mm);
+	status = cdev_add(my_cdev, mm,1);
 	if(status < 0)
 	{
 		printk("char device not been created\n");
