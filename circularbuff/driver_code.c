@@ -2,6 +2,7 @@
 #include <linux/init.h>
 #include <linux/cdev.h>
 #include <linux/fs.h>
+#include <linux/uaccess.h>
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("DD");
 /*
@@ -27,23 +28,23 @@ static int sample_close(struct inode *inodep, struct file *filep)
 }
 static ssize_t sample_read(struct file *filep, char __user *ubuff, size_t cnt, loff_t * offset)
 {
-	/*char kbuff[] = "hello user";
+	char kbuff[] = "hello user";
 	int stat;
 	ssize_t ret;
 
 	printk("in read\n");
 
-        stat = copy_to_user(ubuff, kbuff,count);
+        stat = copy_to_user(ubuff, kbuff,cnt);
         if(stat == 0)
         {
                 printk("sucessfully send messager from kernel \n");
-                ret = count;
+                ret = cnt;
                 return ret;
         }
         else if(stat > 0)
         {
                 printk("some content left to send\n");
-                ret = count-stat;
+                ret = cnt-stat;
                 return ret;
         }
         else
@@ -51,14 +52,35 @@ static ssize_t sample_read(struct file *filep, char __user *ubuff, size_t cnt, l
                 printk("Fail to send message\n");
                 ret = -EFAULT;
                 return ret;
-        }*/
-	printk("in read\n");
-	return 0;
+        }
 }
 static ssize_t sample_write(struct file *filep, const char __user * ubuff, size_t cnt, loff_t *offset)
 {
 	printk("Sample Write\n");
-	return 0;
+	char kbuff[20];
+        int stat;
+        ssize_t ret;
+
+        stat = copy_from_user(kbuff, ubuff,cnt);
+        if(stat == 0)
+        {
+                printk("sucessfully send messager from kernel \n");
+                ret = cnt;
+                return ret;
+        }
+        else if(stat > 0)
+        {
+                printk("some content left to send\n");
+                ret = cnt-stat;
+                return ret;
+        }
+        else
+        {
+                printk("Fail to send message\n");
+                ret = -EFAULT;
+                return ret;
+        }
+
 }
 struct file_operations fops={
 	.open    = sample_open,
