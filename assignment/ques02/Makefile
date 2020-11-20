@@ -1,18 +1,8 @@
-obj-m := module_demo.o 
+obj-m := driver_code.o
+	KERN_SRC=/lib/modules/$(shell uname -r)/build
+	PWD=$(shell pwd)
 
-#native compiler
-KERNELDIR = /lib/modules/$(shell uname -r)/build/
-
-PWD := $(shell pwd)
-
-default :
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
-
-clean  :
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
-	rm -rf /lib/modules/$(shell uname -r)/extra/
-
-install :
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) install
-	depmod -a
-
+modules:
+	$(MAKE) -C $(KERN_SRC) M=$(PWD) modules
+clean:
+	$(MAKE) -C $(KERN_SRC) M=$(PWD) clean
