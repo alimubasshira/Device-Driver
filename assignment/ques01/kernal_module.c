@@ -34,7 +34,7 @@ static int __init init_fun (void)
  
  	//mkdev(int major, int minor);   create a device number
  	dev_t mm;
-        mm    = MKDEV(2,0);
+        mm    = MKDEV(3,0);
 	major = MAJOR(mm);
 	minor = MINOR(mm);
         	
@@ -74,7 +74,7 @@ static int __init init_fun (void)
 static void __exit exit_fun ( void )
 {
  	dev_t mm ;
-	mm = MKDEV(2,0);
+	mm = MKDEV(3,0);
 
   	unregister_chrdev_region(mm, 1);
 	cdev_del(my_cdev);

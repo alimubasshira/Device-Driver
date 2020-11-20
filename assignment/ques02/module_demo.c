@@ -12,10 +12,10 @@
 #define NAME mycDevice
 
 //function prototypes
-int NAME_open(struct inode *inode, struct file *file);
-int NAME_release(struct inode *inode, struct file *file);
-ssize_t NAME_write(struct file *file,const char __user *ubuff, size_t count, loff_t *offp);
-ssize_t NAME_read(struct file *file, char  __user *ubuff, size_t count, loff_t *offp);
+static int NAME_open(struct inode *inode, struct file *file);
+static int NAME_release(struct inode *inode, struct file *file);
+static ssize_t NAME_write(struct file *file,const char __user *ubuff, size_t count, loff_t *offp);
+static ssize_t NAME_read(struct file *file, char  __user *ubuff, size_t count, loff_t *offp);
 
 //structure that defines operation
 struct file_operations fops=
@@ -29,7 +29,7 @@ struct file_operations fops=
 };
 
 //Structure for character driver
-struct cdev *my_cdev;
+static struct cdev *my_cdev;
 
 //initialization module
 static int __init init_fun (void)
@@ -58,8 +58,11 @@ static int __init init_fun (void)
  	}
 
 	//initializing char device with file operations
-	cdev_init(my_cdev,&fops);
+	//cdev_init(my_cdev,&fops);
+	my_cdev = cdev_alloc();
 
+        my_cdev -> ops = &fops;
+        
 	//notify kernel about the new device
 	status = cdev_add(my_cdev, mm,1);
 	if(status < 0)
@@ -83,21 +86,21 @@ static void __exit exit_fun ( void )
 }
 
 //open system call
-int NAME_open(struct inode *inode, struct file *file)
+static int NAME_open(struct inode *inode, struct file *file)
 {
        printk("IN kernel space.......in open call\n");
        return 0;       
 }
 
 //release system call
-int NAME_release(struct inode *inode, struct file *file)
+static int NAME_release(struct inode *inode, struct file *file)
 {
        printk("IN kernel space.......in release call\n");
        return 0;       
 }
 
 //write system call
-ssize_t NAME_write(struct file *file,const  char __user *ubuff, size_t count, loff_t *offp)
+static ssize_t NAME_write(struct file *file,const  char __user *ubuff, size_t count, loff_t *offp)
 {
 	int stat;
 	char kbuff[10];
@@ -128,12 +131,12 @@ ssize_t NAME_write(struct file *file,const  char __user *ubuff, size_t count, lo
 }
 
 //read system call
-ssize_t NAME_read(struct file *file, char __user *ubuff, size_t count, loff_t *offp)
+static ssize_t NAME_read(struct file *file,char __user *ubuff, size_t count, loff_t *offp)
 {
 	ssize_t ret;
-	char kbuff[20]= "hey....I am kerenel";
+	char kbuff[]= "hey....I am kerenel";
 	int stat;
-	stat = copy_to_user(kbuff, ubuff,count);
+	stat = copy_to_user(ubuff, kbuff,count);
 	if(stat == 0)
 	{
 	        printk("sucessfully send messager from kernel \n");
@@ -149,7 +152,7 @@ ssize_t NAME_read(struct file *file, char __user *ubuff, size_t count, loff_t *o
 	else
 	{
 	        printk("Fail to send message\n");
-		stat = -EFAULT;
+		ret = -EFAULT;
 		return ret;
 	}
 
