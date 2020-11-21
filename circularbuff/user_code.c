@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#define SIZE 11
+#define SIZE 12
 int main( )
 {
 	int fd,ret;
@@ -13,16 +13,17 @@ int main( )
 	perror("Error opening\n");
 	return fd;
 	}
-	ret = read(fd,buffR,SIZE);
-
-	printf("message from kernel: %s\n no of data read:%d\n",buffR,ret);
-
 	ret =write(fd,buffW,sizeof(buffW));
-
 	if(ret == sizeof(buffW))
 	{
-		printf("successfully wrtten to kernel\n");
+		printf("successfully wrtten %d byte to kernel\n",ret);
 	}
+
+	ret = read(fd,buffR,sizeof(buffW));
+
+        printf("message from kernel: %s\n no of data read:%d\n",buffR,ret);
+	
 	close(fd);
+
 	return 0; 
 }

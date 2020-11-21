@@ -3,6 +3,9 @@
 #include <linux/cdev.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
+#include <linux/circ_buf.h>
+#include<linux/slab.h>
+# define SIZE 12
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("DD");
 /*
@@ -15,71 +18,65 @@ MODULE_AUTHOR("DD");
 
 static dev_t devnum;      // device number
 static struct cdev _cdev; // represents  char device 
+static struct circ_buf cbuff;    // circular buffer
 
 static int sample_open(struct inode *inodep,struct file *filep)
 {
-	printk("Sample Open function\n");
+	printk("In Open function\n");
 	return 0;
 }
 static int sample_close(struct inode *inodep, struct file *filep)
 {
-	printk("sample Close function\n");
+	printk("In Close function\n");
 	return 0;
 }
 static ssize_t sample_read(struct file *filep, char __user *ubuff, size_t cnt, loff_t * offset)
 {
-	char kbuff[] = "hello user";
-	int stat;
-	ssize_t ret;
+	int i;
+	int ret;
+	printk("In read function\n");
 
-	printk("in read\n");
+	printk("No of byte user want: %d\n",(int)cnt);		
+		
+	for(i=0; i<cnt; i++)
+	{
+	   ret=copy_to_user(ubuff+i, cbuff.buf+cbuff.tail, 1);
+	   if(ret)
+	   {
+	   	printk("error copy_to_user \n");
+		return -1;
+	   }
+           cbuff.tail=(cbuff.tail+1)&(SIZE-1);
+	}
 
-        stat = copy_to_user(ubuff, kbuff,cnt);
-        if(stat == 0)
-        {
-                printk("sucessfully send messager from kernel \n");
-                ret = cnt;
-                return ret;
-        }
-        else if(stat > 0)
-        {
-                printk("some content left to send\n");
-                ret = cnt-stat;
-                return ret;
-        }
-        else
-        {
-                printk("Fail to send message\n");
-                ret = -EFAULT;
-                return ret;
-        }
+        printk("no of byte successfully read data from kernel: %d\n",i);
+
+	return i;
 }
 static ssize_t sample_write(struct file *filep, const char __user * ubuff, size_t cnt, loff_t *offset)
 {
-	printk("Sample Write\n");
-	char kbuff[20];
-        int stat;
-        ssize_t ret;
+	int i;
+	int ret;
+	int j;
+	printk("In Write function\n");
 
-        stat = copy_from_user(kbuff, ubuff,cnt);
-        if(stat == 0)
-        {
-                printk("sucessfully send messager from kernel \n");
-                ret = cnt;
-                return ret;
-        }
-        else if(stat > 0)
-        {
-                printk("some content left to send\n");
-                ret = cnt-stat;
-                return ret;
-        }
-        else
-        {
-                printk("Fail to send message\n");
-                ret = -EFAULT;
-                return ret;
-        }
+	for(i=0; i<cnt; i++)
+	{
+	   ret=copy_from_user(cbuff.buf+cbuff.head, ubuff+i, 1);
+	   if(ret)
+           {
+                printk("error copy_to_user \n");
+                return -1;
+           }
+	   cbuff.head=(cbuff.head+1)&(SIZE-1);		
+	}
+       
+        printk("data write by user:");
+	for(j=cbuff.tail; j < cbuff.head; j++)
+	{
+		printk("%c",cbuff.buf[j]);
+	}  
+	return i;       
 
 }
 struct file_operations fops={
@@ -92,23 +89,38 @@ struct file_operations fops={
 static int __init sample_init(void)
 {
 	int ret,major,minor; 
-//	devnum =MKDEV(42,0); // is used for constructing a device number
+	printk("In init function\n");
+
 	ret = alloc_chrdev_region(&devnum,0,1,"dev04");// request the kernel
 	if(ret)
 	{  //non zero means not successfull
 		printk("Kernel did't grant us device number\n");
 		return ret;
 	}
+
 	major = MAJOR(devnum);
         minor = MINOR(devnum);
 	printk("device no:%d %d\n",major,minor);
+
 	//Control : we got device number
 	cdev_init(&_cdev,&fops); // Binds your cdev with file operations
+	
+	//Allocating memory for circular buffer
+	cbuff.buf = kmalloc(SIZE, GFP_KERNEL);
+	if(!cbuff.buf)
+		 {
+		      printk("memory kenel buff not allocate \n");
+		      unregister_chrdev_region(devnum,1);
+		      return -1;
+		   
+		 }
+
 	ret = cdev_add(&_cdev,devnum,1); //Device is "Live" Now
 	if(ret)
 	{
 		printk("Unable to add cdev to kernel\n");
 		unregister_chrdev_region(devnum,1);
+		kfree(cbuff.buf);
 		return ret;
 	}
 	printk("Done Init\n");
@@ -116,9 +128,11 @@ static int __init sample_init(void)
 }
 static void __exit sample_exit(void)
 {
+	printk("In exit function\n");
 	cdev_del(&_cdev);
+	kfree(cbuff.buf);
 	unregister_chrdev_region(devnum,1);
-	printk("Good bye\n");
+	printk("done exit\n");
 }
 module_init(sample_init);
 module_exit(sample_exit);
