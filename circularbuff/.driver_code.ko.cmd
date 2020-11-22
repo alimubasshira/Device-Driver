@@ -1,1 +1,0 @@
-cmd_/home/ubuntu/Device_deriver/circularbuff/driver_code.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/ubuntu/Device_deriver/circularbuff/driver_code.ko /home/ubuntu/Device_deriver/circularbuff/driver_code.o /home/ubuntu/Device_deriver/circularbuff/driver_code.mod.o;  true
