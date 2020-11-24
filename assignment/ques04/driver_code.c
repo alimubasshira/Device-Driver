@@ -3,9 +3,7 @@
 #include <linux/cdev.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
-#include <linux/circ_buf.h>
-#include<linux/slab.h>
-# define SIZE 12
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("DD");
 /*
@@ -18,7 +16,6 @@ MODULE_AUTHOR("DD");
 
 static dev_t devnum;      // device number
 static struct cdev _cdev; // represents  char device 
-static struct circ_buf cbuff;    // circular buffer
 
 static int sample_open(struct inode *inodep,struct file *filep)
 {
@@ -30,68 +27,69 @@ static int sample_close(struct inode *inodep, struct file *filep)
 	printk("In Close function\n");
 	return 0;
 }
-static ssize_t sample_read(struct file *filep, char __user *ubuff, size_t cnt, loff_t * offset)
+static ssize_t add_read(struct file *filep, char __user *ubuff, size_t cnt, loff_t * offset)
 {
-	int i;
-	int ret;
+	ssize_t i;
+	i=cnt;
 	printk("In read function\n");
 
 	printk("No of byte user want: %d\n",(int)cnt);		
-		
-	for(i=0; i<cnt; i++)
+	
+	ret=copy_to_user(ubuff,add);
+	if(ret)
 	{
-	   ret=copy_to_user(ubuff+i, cbuff.buf+cbuff.tail, 1);
-	   if(ret)
-	   {
-	   	printk("error copy_to_user \n");
-		return -1;
-	   }
-           cbuff.tail=(cbuff.tail+1)&(SIZE-1);
+	    printk("error copy_to_user \n");
+	    return -1;
 	}
 
         printk("no of byte successfully read data from kernel: %d\n",i);
-
-	return i;
+	return cnt;
 }
-static ssize_t sample_write(struct file *filep, const char __user * ubuff, size_t cnt, loff_t *offset)
+static ssize_t add_write(struct file *filep, const char __user * ubuff, size_t cnt, loff_t *offset)
 {
-	int i;
-	int ret;
-	int j;
+	ssize_t i;
+	i=cnt;
 	printk("In Write function\n");
-
-	for(i=0; i<cnt; i++)
-	{
-	   ret=copy_from_user(cbuff.buf+cbuff.head, ubuff+i, 1);
-	   if(ret)
-           {
-                printk("error copy_to_user \n");
-                return -1;
-           }
-	   cbuff.head=(cbuff.head+1)&(SIZE-1);		
-	}
-       
+          
+        
         printk("data write by user:");
-	for(j=cbuff.tail; j < cbuff.head; j++)
-	{
-		printk("%c",cbuff.buf[j]);
-	}  
-	return i;       
+	return cnt;       
 
 }
-struct file_operations fops={
+struct file_operations fops1={
 	.open    = sample_open,
 	.release = sample_close,
-	.read    = sample_read,
-	.write   = sample_write,
-}; //Designated initialisation of a structure;
+	.read    = add_read,
+	.write   = add_write,
+}; 
+
+struct file_operations fops2={
+        .open    = sample_open,
+        .release = sample_close,
+        .read    = sub_read,
+        .write   = sub_write,
+};
+
+struct file_operations fops3={
+        .open    = sample_open,
+        .release = sample_close,
+        .read    = mul_read,
+        .write   = mul_write,
+};
+
+struct file_operations fops4={
+        .open    = sample_open,
+        .release = sample_close,
+        .read    = div_read,
+        .write   = div_write,
+};
 
 static int __init sample_init(void)
 {
 	int ret,major,minor; 
 	printk("In init function\n");
 
-	ret = alloc_chrdev_region(&devnum,0,1,"dev04");// request the kernel
+	ret = alloc_chrdev_region(&devnum,0,4,"dev04");// request the kernel
 	if(ret)
 	{  //non zero means not successfull
 		printk("Kernel did't grant us device number\n");
@@ -105,22 +103,11 @@ static int __init sample_init(void)
 	//Control : we got device number
 	cdev_init(&_cdev,&fops); // Binds your cdev with file operations
 	
-	//Allocating memory for circular buffer
-	cbuff.buf = kmalloc(SIZE, GFP_KERNEL);
-	if(!cbuff.buf)
-		 {
-		      printk("memory kenel buff not allocate \n");
-		      unregister_chrdev_region(devnum,1);
-		      return -1;
-		   
-		 }
-
 	ret = cdev_add(&_cdev,devnum,1); //Device is "Live" Now
 	if(ret)
 	{
 		printk("Unable to add cdev to kernel\n");
 		unregister_chrdev_region(devnum,1);
-		kfree(cbuff.buf);
 		return ret;
 	}
 	printk("Done Init\n");
@@ -130,7 +117,6 @@ static void __exit sample_exit(void)
 {
 	printk("In exit function\n");
 	cdev_del(&_cdev);
-	kfree(cbuff.buf);
 	unregister_chrdev_region(devnum,1);
 	printk("done exit\n");
 }

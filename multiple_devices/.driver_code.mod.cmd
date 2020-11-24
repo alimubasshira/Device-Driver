@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/Device_deriver/multiple_devices/driver_code.mod := { echo  /home/ubuntu/Device_deriver/multiple_devices/driver_code.o; echo; } > /home/ubuntu/Device_deriver/multiple_devices/driver_code.mod
