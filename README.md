@@ -116,5 +116,5 @@ Day-4 : (code)
 Day-5 :
 Device Driver
   * https://embetronicx.com/tutorials/linux/device-drivers/device-file-creation-for-character-drivers/
-      
+  * http://www.makelinux.net/ldd3/?u=chp-1.shtml 
   
