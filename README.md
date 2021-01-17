@@ -96,7 +96,8 @@ Day-3:
       @ makefile 
     * utilites to veiw/manage/remove module
       * insmod
-      * lsmod
+      * lsmod  lsmod works by reading the /proc/modules virtual file. 
+               Information on currently loaded modules can also be found in the sysfs virtual filesystem under /sys/module.
       * rmmod
       * dmesg -c
       * user -r
@@ -117,4 +118,6 @@ Day-5 :
 Device Driver
   * https://embetronicx.com/tutorials/linux/device-drivers/device-file-creation-for-character-drivers/
   * http://www.makelinux.net/ldd3/?u=chp-1.shtml 
+
+*  reentrant—it must be capable of running in more than one context at the same time.
   
