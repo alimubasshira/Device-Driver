@@ -102,7 +102,7 @@ Day-3:
       * user -r
   
 Day-4 : (code)
-  
+  * The message goes to one of the system log files, such as /var/log/messages (the name of the actual file varies between Linux distributions).
   * command line argument to module
     * module parameter       --> module_param(name , type, permission)
     * module array parameter --> module_array_param(name of varable, & no of element passed, type, permision )
