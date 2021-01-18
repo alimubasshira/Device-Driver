@@ -121,6 +121,8 @@ Device Driver
 
 *  reentrant—it must be capable of running in more than one context at the same time.
 
+* We can create the device file manually by using mknod.
+    mknod -m <permissions> <name> <device type> <major> <minor>
 * We can allocate the major and minor numbers in two ways.
     * Statically allocating
         int register_chrdev_region(dev_t first, unsigned int count, char *name);
