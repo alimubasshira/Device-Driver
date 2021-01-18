@@ -120,4 +120,69 @@ Device Driver
   * http://www.makelinux.net/ldd3/?u=chp-1.shtml 
 
 *  reentrant—it must be capable of running in more than one context at the same time.
+
+* We can allocate the major and minor numbers in two ways.
+    * Statically allocating
+        int register_chrdev_region(dev_t first, unsigned int count, char *name);
+        return 0 on success
+    * Dynamically Allocating  
+        int alloc_chrdev_region(dev_t *dev, unsigned int firstminor, unsigned int count, char *name);
+        dev is an output-only parameter that will, on successful completion, hold the first number in your allocated range.
+    
+*  dev_t is a 32-bit quantity with 12 bits set aside for the major number and 20 for the minor number.    
+
+* Dallocation of major and minor numbers 
+    void unregister_chrdev_region(dev_t first, unsigned int count);
+
+* We can create a divce file in two ways.
+    * Manually
+        mknod -m <permissions> <name> <device type> <major> <minor>
+        If you don’t want to give permission, You can also use chmod to set the permissions for a device file after creation.
+    * Automatically
+        * Include the header file linux/device.h and linux/kdev_t.h
+        * Create the struct Class
+            This will create the struct class for our device driver. It will create a structure under/sys/class/.
+                struct class * class_create (struct module *owner, const char *name);
+            the pointer created here is to be destroyed when finished by making a call to class_destroy.
+                void class_destroy (struct class * cls);
+        * Create Device with the class which is created by the above step
+             This function can be used by char device classes. A struct device will be created in sysfs, registered to the specified class.
+                struct device *device_create (struct *class, struct device *parent, dev_t dev, const char *fmt, ...);
+             you can destroy the device using device_destroy().
+                void device_destroy (struct class * class, dev_t devt);
+*  There are two ways of allocating and initializing one of these structures.
+    * Runtime Allocation
+          struct cdev *my_cdev = cdev_alloc( );
+          my_cdev->ops = &my_fops;
+    * Own allocation
+          void cdev_init(struct cdev *cdev, struct file_operations *fops);
+  
+* the final step is to tell the kernel about it with a call to: 
+    int cdev_add(struct cdev *dev, dev_t num, unsigned int count);
+  
+* To remove a char device from the system, call:
+    void cdev_del(struct cdev *dev);  
+
+* kmalloc function is used to allocate the memory in kernel space. This is like a malloc() function in userspace. The function is fast (unless it blocks) and doesn’t clear the memory it obtains. The allocated region still holds its previous content. The allocated region is also contiguous in physical memory.
+ 
+* This is like a free() function in the userspace. This is used to free the previously allocated memory.
+    void kfree(const void *objp)
+    
+* copy_from_user()
+    This function is used to Copy a block of data from user space (Copy data from user space to kernel space).
+    unsigned long copy_from_user(void *to, const void __user *from, unsigned long  n);  
+
+* copy_to_user()
+    This function is used to Copy a block of data into userspace (Copy data from kernel space to user space).
+    unsigned long copy_to_user(const void __user *to, const void *from, unsigned long  n);
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
