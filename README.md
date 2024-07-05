@@ -56,7 +56,8 @@ what is ABI?
    * Your program doesn't have functions
    * Your program is a single executable that is running alone (i.e. an embedded system) 
      where it's literally the only thing running and it doesn't need to talk to anything else.
-
+ * An application binary interface (ABI) is similar to an API, but the function is not accessible to the caller at source code level. Only a binary representation is accessible/available.
+ * ABIs may be defined at the processor-architecture level or at the OS level. The ABIs are standards to be followed by the code-generator phase of the compiler. The standard is fixed either by the OS or by the processor.
 Board support development
  * Bootloader
    * It is peice of code which prepare hardware for kernel ready
